@@ -5,13 +5,11 @@ import (
 	"fmt"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 	"log"
 )
 
 func GetPods() {
-	clientset := initCluster()
+	clientset := InitCluster()
 	for {
 		// get pods in all the namespaces by omitting namespace
 		// Or specify namespace to get pods in particular namespace
@@ -36,18 +34,4 @@ func GetPods() {
 			fmt.Printf("Found example-xxxxx pod in default namespace\n")
 		}
 	}
-}
-
-func initCluster() *kubernetes.Clientset {
-	// creates the in-cluster config
-	config, err := rest.InClusterConfig()
-	if err != nil {
-		log.Fatal("error ", err)
-	}
-	// creates the clientset
-	clientset, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		log.Fatal("error ", err)
-	}
-	return clientset
 }
