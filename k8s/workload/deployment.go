@@ -6,6 +6,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
+	"strings"
 )
 
 func GetPods() {
@@ -34,4 +35,17 @@ func GetPods() {
 			fmt.Printf("Found example-xxxxx pod in default namespace\n")
 		}
 	}
+}
+
+func GetDeploy(deploymentName, namespace string) string {
+	deployments, err := clientset.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		log.Fatal("error ", err)
+	}
+	for _, item := range deployments.Items {
+		if strings.Contains(item.Name, deploymentName) {
+			return deploymentName
+		}
+	}
+	return ""
 }
