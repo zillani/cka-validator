@@ -3,6 +3,7 @@ package workload
 import (
 	"context"
 	"fmt"
+	v1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
@@ -37,15 +38,27 @@ func GetPods() {
 	}
 }
 
-func GetDeploy(deploymentName, namespace string) string {
+func GetDeployment(deploymentName, namespace string) (string, int32, v1.Deployment) {
 	deployments, err := clientset.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		log.Fatal("error ", err)
 	}
 	for _, item := range deployments.Items {
 		if strings.Contains(item.Name, deploymentName) {
-			return deploymentName
+			return deploymentName, item.Status.Replicas, item
 		}
 	}
-	return ""
+	return "", 0, v1.Deployment{}
+}
+
+func GetDeployments(namespace string) []string {
+	var deploymentList []string
+	deployments, err := clientset.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		log.Fatal("error ", err)
+	}
+	for _, item := range deployments.Items {
+		deploymentList = append(deploymentList, item.Name)
+	}
+	return deploymentList
 }
