@@ -104,6 +104,6 @@ func Server() {
 		})
 	}
 
-	// Start and run the server
+	// Start and run the terminal-server
 	router.Run(":3000")
 }

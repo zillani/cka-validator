@@ -41,7 +41,7 @@ const SocketService = require("./SocketService");
   If you use other packages like express, use something like,
   
   const app = require("express")();
-  const server = require("http").Server(app);
+  const terminal-server = require("http").Server(app);
 
 */
 const server = http.createServer((req, res) => {
@@ -55,7 +55,7 @@ server.listen(port, function() {
   console.log("Server listening on : ", port);
   const socketService = new SocketService();
 
- // We are going to pass server to socket.io in SocketService.js
+ // We are going to pass terminal-server to socket.io in SocketService.js
   socketService.attachServer(server);
 });
 ```
@@ -79,7 +79,7 @@ class SocketService {
     }
 
     const io = socketIO(server);
-    console.log("Created socket server. Waiting for client connection.");
+    console.log("Created socket terminal-server. Waiting for client connection.");
     // "connection" event happens when any client connects to this io instance.
     io.on("connection", socket => {
       console.log("Client connect to socket.", socket.id);
@@ -211,7 +211,7 @@ export class TerminalUI {
   startListening() {
     this.terminal.onData(data => this.sendInput(data));
     this.socket.on("output", data => {
-      // When there is data from PTY on server, print that on Terminal.
+      // When there is data from PTY on terminal-server, print that on Terminal.
       this.write(data);
     });
   }
@@ -231,8 +231,8 @@ export class TerminalUI {
   }
 
   /**
-   * Send whatever you type in Terminal UI to PTY process in server.
-   * @param {*} input Input to send to server
+   * Send whatever you type in Terminal UI to PTY process in terminal-server.
+   * @param {*} input Input to send to terminal-server
    */
   sendInput(input) {
     this.socket.emit("input", input);
@@ -267,7 +267,7 @@ And finally, we need to initialize our [socket.io](http://socket.io/) client to 
 import { TerminalUI } from "./TerminalUI";
 import io from "socket.io-client";
 
-// IMPORTANT: Make sure you replace this address with your server address.
+// IMPORTANT: Make sure you replace this address with your terminal-server address.
 
 const serverAddress = "http://localhost:8080";
 

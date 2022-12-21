@@ -3,7 +3,7 @@
 import { TerminalUI } from "./TerminalUI";
 import io from "socket.io-client";
 
-// IMPORTANT: Make sure you replace this address with your server address.
+// IMPORTANT: Make sure you replace this address with your terminal-server address.
 
 const serverAddress = "http://139.59.22.92:3030";
 
