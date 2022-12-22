@@ -5,7 +5,7 @@ import io from "socket.io-client";
 
 // IMPORTANT: Make sure you replace this address with your server address.
 
-const serverAddress = "http://139.59.22.92:3030";
+const serverAddress = "http://139.59.22.92:8080";
 
 //Server sandbox available at https://codesandbox.io/s/web-terminal-tutorial-server-g2ihu
 

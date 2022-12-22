@@ -1,12 +1,30 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Goacademy Lab</title>
-    <meta charset="UTF-8" />
-  </head>
-  <body>
-    <div id="terminal-container"></div>
-    <p>create namespace lab1</p>
-    <script src="src/index.js"></script>
-  </body>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="src/index.js"></script>
+<script src="src/app.js"></script>
+<script src="src/deployments.js"></script>
+
+<div id="terminal-container"></div>
+<p>create namespace lab1</p>
+<button>submit</button>
+
+<div class="container">
+    <div class="title">
+        <h1>Making HTTP requests with Axios</h1>
+    </div>
+    <div class="buttons">
+        <button id="get">GET</button>
+        <button id="post">POST</button>
+        <button id="concurrent">Concurrent</button>
+    </div>
+    <div id="responseDisplay"></div>
+</div>
+
+</body>
 </html>

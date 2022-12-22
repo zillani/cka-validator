@@ -27,10 +27,9 @@ func Server() {
 			})
 		})
 		api.GET("/namespaces", func(c *gin.Context) {
-			ns := c.Request.URL.Query().Get("name")
-			resultNs := workload.GetNamespace(ns)
+			resultNs := workload.GetNamespaces()
 			c.JSON(http.StatusOK, gin.H{
-				"Namespace": resultNs,
+				"Namespaces": resultNs,
 			})
 		})
 		api.GET("/namespaces/:id", func(c *gin.Context) {
@@ -40,30 +39,71 @@ func Server() {
 				"Namespace": resultNs,
 			})
 		})
+		api.GET("/deployments", func(c *gin.Context) {
+			ns := c.Query("ns")
+			if ns == "" {
+				ns = "default"
+			}
+			dp := workload.GetDeployments(ns)
+			c.JSON(http.StatusOK, gin.H{
+				"deployments": dp,
+			})
+		})
+		api.GET("/deployments/:id", func(c *gin.Context) {
+			depName := c.Param("id")
+			ns := c.Query("ns")
+			if ns == "" {
+				ns = "default"
+			}
+			dp, replicas, _ := workload.GetDeployment(depName, ns)
+			c.JSON(http.StatusOK, gin.H{
+				"deployment": gin.H{
+					"name":      dp,
+					"namespace": ns,
+					"replicas":  replicas,
+				},
+			})
+		})
 		api.GET("/exam/:id", func(c *gin.Context) {
 			qid := c.Param("id")
-			var ns = "exam"
+			// Create deploy webapp from image nginx in namespace web
 			if qid == "1" {
 				log.Info("First question!")
-				resultNs := workload.GetNamespace(ns)
+				depName := "webapp"
+				ns := "default"
+				dp, activeReplicas, depObj := workload.GetDeployment(depName, ns)
+				image := depObj.Spec.Template.Spec.Containers[0].Image
+				containerName := depObj.Spec.Template.Spec.Containers[0].Name
 				c.JSON(http.StatusOK, gin.H{
-					"Namespace": resultNs,
+					"deployments": gin.H{
+						"name":      dp,
+						"namespace": ns,
+						"container": gin.H{
+							"name":  containerName,
+							"image": image,
+						},
+						"activeReplicas": activeReplicas,
+					},
 				})
-			}
-			if qid == "2" {
+			} else if qid == "2" {
 				log.Info("Second question!")
-				dp := workload.GetDeploy(deployment, namespace)
+				dp, active, _ := workload.GetDeployment(deployment, namespace)
 				c.JSON(http.StatusOK, gin.H{
-					"Namespace": namespace,
-					"Deploy":    dp,
+					"Deploy": gin.H{
+						"name":      dp,
+						"namespace": namespace,
+						"active":    active,
+					},
+				})
+			} else {
+				c.JSON(http.StatusOK, gin.H{
+					"Message": "Error!",
 				})
 			}
-			c.JSON(http.StatusOK, gin.H{
-				"Message": "Error!",
-			})
+
 		})
 	}
 
-	// Start and run the server
+	// Start and run the terminal-server
 	router.Run(":3000")
 }
